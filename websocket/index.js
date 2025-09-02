@@ -12,11 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const ws_1 = require("ws");
-const db_1 = require("@repo/db");
+const src_1 = require("./db/src");
 const crypto_1 = __importDefault(require("crypto"));
-const prisma = db_1.prismaClient;
-const wss = new ws_1.WebSocketServer({ port: 8080 });
+const prisma = src_1.prismaClient;
+const PORT = process.env.PORT || 8080;
+const wss = new ws_1.WebSocketServer({ port: Number(PORT) });
 function generateRoomCode() {
     return crypto_1.default.randomBytes(6).toString("base64url").slice(0, 8).toUpperCase();
 }
@@ -166,4 +169,4 @@ wss.on('connection', ws => {
         }
     }));
 });
-console.log('WebSocket server running on ws://localhost:8080');
+console.log('WebSocket server running on ws://localhost:' + PORT);

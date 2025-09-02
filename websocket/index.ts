@@ -1,9 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { WebSocketServer } from 'ws';
-import { prismaClient } from "@repo/db";
+import { prismaClient } from "./db/src";
 import crypto from "crypto";
 
 const prisma = prismaClient;
-const wss = new WebSocketServer({ port: 8080 });
+const PORT = process.env.PORT || 8080;
+const wss = new WebSocketServer({ port: Number(PORT) });
 
 function generateRoomCode(): string {
   return crypto.randomBytes(6).toString("base64url").slice(0, 8).toUpperCase();
@@ -163,4 +166,4 @@ wss.on('connection', ws => {
   });
 });
 
-console.log('WebSocket server running on ws://localhost:8080');
+console.log('WebSocket server running on ws://localhost:' + PORT);
