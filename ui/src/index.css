@@ -1,0 +1,20 @@
+
+
+
+@import "tailwindcss";
+glow-highlight {
+  animation: glow 1s infinite alternate;
+}
+@keyframes glow {
+  from { box-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; }
+  to   { box-shadow: 0 0 20px #00ffaa, 0 0 40px #00ffaa; }
+}
+
+/* Fade + scale animation for symbol placement */
+.animate-fade-scale-in {
+  animation: fadeScale 0.4s ease forwards;
+}
+@keyframes fadeScale {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}

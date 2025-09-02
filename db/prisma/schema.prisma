@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Symbol {
+  X
+  O
+}
+
+enum RoomStatus {
+  waiting
+  playing
+  finished
+  abandoned
+}
+
+model Player {
+  id        String   @id @default(uuid())
+  username  String?
+  symbol    Symbol?  // "X" or "O"
+  joinedAt  DateTime @default(now())
+
+  roomId    String?
+  room      Room?    @relation(fields: [roomId], references: [id])
+
+  moves     Move[]
+}
+
+model Room {
+  id          String      @id @default(uuid())
+  code        String      @unique         // short join code
+  status      RoomStatus  @default(waiting)
+  currentTurn String?                      // playerId
+  ownerId     String                       // playerId of room owner
+  winnerId    String?                      // playerId of winner
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  players     Player[]
+  moves       Move[]
+}
+
+model Move {
+  id        String   @id @default(uuid())
+  symbol    Symbol   // "X" | "O"
+  index     Int      // board position (0–8)
+  createdAt DateTime @default(now())
+
+  playerId  String
+  player    Player   @relation(fields: [playerId], references: [id])
+
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id])
+}
