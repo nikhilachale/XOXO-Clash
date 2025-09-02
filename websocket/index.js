@@ -17,9 +17,16 @@ dotenv_1.default.config();
 const ws_1 = require("ws");
 const src_1 = require("./db/src");
 const crypto_1 = __importDefault(require("crypto"));
+const https_1 = __importDefault(require("https"));
+const fs_1 = __importDefault(require("fs"));
 const prisma = src_1.prismaClient;
 const PORT = process.env.PORT || 8080;
-const wss = new ws_1.WebSocketServer({ port: Number(PORT) });
+const server = https_1.default.createServer({
+    cert: fs_1.default.readFileSync(process.env.TLS_CERT),
+    key: fs_1.default.readFileSync(process.env.TLS_KEY),
+});
+const wss = new ws_1.WebSocketServer({ server });
+server.listen(PORT, () => console.log(`Secure WebSocket server running on wss://localhost:${PORT}`));
 function generateRoomCode() {
     return crypto_1.default.randomBytes(6).toString("base64url").slice(0, 8).toUpperCase();
 }
@@ -169,4 +176,3 @@ wss.on('connection', ws => {
         }
     }));
 });
-console.log('WebSocket server running on ws://localhost:' + PORT);
