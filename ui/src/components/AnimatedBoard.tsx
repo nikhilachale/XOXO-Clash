@@ -37,7 +37,7 @@ const AnimatedBoard: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, []);
 
-  const renderIcon = (value: string | null, index: number) => {
+  const renderIcon = (value: string | null) => {
     if (value === 'X') {
       return <X className="h-12 w-12 text-blue-600" />;
     }
@@ -61,7 +61,7 @@ const AnimatedBoard: React.FC = () => {
               key={index}
               className="bg-white/5 hover:bg-white/20 rounded-xl border border-white/20 flex items-center justify-center transition-all duration-300 hover:scale-105"
             >
-              {renderIcon(cell, index)}
+              {renderIcon(cell)}
             </div>
           ))}
         </div>
