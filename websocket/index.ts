@@ -7,13 +7,13 @@ import https from 'https';
 import fs from 'fs';
 const prisma = prismaClient;
 const PORT = process.env.PORT || 8080;
-const server = https.createServer({
-  cert: fs.readFileSync(process.env.TLS_CERT as string),
-  key: fs.readFileSync(process.env.TLS_KEY as string),
-});
+// const server = https.createServer({
+//   cert: fs.readFileSync(process.env.TLS_CERT as string),
+//   key: fs.readFileSync(process.env.TLS_KEY as string),
+// });
 
-const wss = new WebSocketServer({ server });
-server.listen(PORT, () => console.log(`Secure WebSocket server running on wss://localhost:${PORT}`));
+const wss = new WebSocketServer({ port: Number(PORT) });
+console.log(`Secure WebSocket server running on wss://localhost:${PORT}`);
 
 function generateRoomCode(): string {
   return crypto.randomBytes(6).toString("base64url").slice(0, 8).toUpperCase();
