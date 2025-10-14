@@ -7,7 +7,7 @@ const AnimatedBoard: React.FC = () => {
   const demoSequence = [0, 4, 1, 3, 2]; // Winning sequence for demo
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
     let sequenceIndex = 0;
     let player: 'X' | 'O' = 'X'; // local player variable
 

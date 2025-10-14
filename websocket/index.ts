@@ -15,6 +15,9 @@ const PORT = process.env.PORT || 8080;
 const wss = new WebSocketServer({ port: Number(PORT) });
 console.log(`Secure WebSocket server running on wss://localhost:${PORT}`);
 
+const blackPieces = ['p','r','n','b','q','k'];
+const whitePieces = ['P','R','N','B','Q','K'];
+
 function generateRoomCode(): string {
   return crypto.randomBytes(6).toString("base64url").slice(0, 8).toUpperCase();
 }
