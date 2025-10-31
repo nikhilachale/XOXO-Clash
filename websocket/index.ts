@@ -39,7 +39,7 @@ wss.on('connection', ws => {
     try { parsed = JSON.parse(msg.toString()); } 
     catch { return; }
 
-    // ================== CREATE ROOM ==================
+    //CREATE ROOM 
     if (parsed.type === 'create_room') {
       const roomCode = generateRoomCode();
       const playerId = crypto.randomUUID();
@@ -76,7 +76,7 @@ wss.on('connection', ws => {
       })();
     }
 
-    // ================== JOIN ROOM ==================
+    // JOIN ROOM 
     if (parsed.type === 'join_room') {
       const room = rooms[parsed.roomCode];
       if (!room) { ws.send(JSON.stringify({ type: 'error', message: 'Room not found' })); return; }
@@ -100,7 +100,7 @@ wss.on('connection', ws => {
       })();
     }
 
-    // ================== MOVE ==================
+    // MOVE 
     if (parsed.type === 'move') {
       const room = rooms[parsed.roomCode];
       if (!room) return ws.send(JSON.stringify({ type: 'error', message: 'Room not found' }));
@@ -151,7 +151,7 @@ wss.on('connection', ws => {
       })();
     }
 
-    // ================== RESTART ==================
+    //  RESTART 
     if (parsed.type === 'restart') {
       const room = rooms[parsed.roomCode];
       if (!room) return;
@@ -170,4 +170,4 @@ wss.on('connection', ws => {
       })();
     }
   });
-});
+}); 
