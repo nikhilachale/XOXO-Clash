@@ -47,9 +47,7 @@ const AnimatedBoard: React.FC = () => {
     return null;
   };
 
-  // Since currentPlayer state is removed, we can't render current player from state.
-  // Instead, we can omit or show a static message.
-  // Alternatively, we can show "Current Turn: X" as placeholder.
+ 
 
   return (
     <div className="relative">

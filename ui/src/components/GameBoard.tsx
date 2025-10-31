@@ -72,7 +72,7 @@ function GameBoard() {
           setCurrentTurn(data.currentTurn);
         }
         if (data.type === "game_won") {
-          // 1️⃣ Update board with winning positions
+          //  Update board with winning positions
           setBoard(prevBoard => {
             const newBoard = [...prevBoard];
             if (data.winningPositions) {
@@ -83,10 +83,10 @@ function GameBoard() {
             return newBoard;
           });
 
-          // 2️⃣ Update winning line for highlighting
+          //  Update winning line for highlighting
           setWinningLine(data.winningPositions || []);
 
-          // 3️⃣ Trigger popup
+          //  Trigger popup
           console.log("Game won by:", data.playerId);
           setWinner(data.playerId);
         }
@@ -110,8 +110,7 @@ function GameBoard() {
     return () => {
       ws.close(); // cleanup
     };
-    // Only run once on mount
-    // eslint-disable-next-line
+   
   }, []);
 
   useEffect(() => {
