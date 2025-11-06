@@ -18,7 +18,7 @@ function GameBoard() {
   const [showJoinModal, setShowJoinModal] = useState(false);
 
   useEffect(() => {
-   const ws = new WebSocket(import.meta.env.VITE_WS_URL);
+   const ws = new WebSocket("wss://xo-ws.onrender.com");
     setSocket(ws);
 
     ws.onopen = () => {

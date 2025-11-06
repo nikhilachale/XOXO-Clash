@@ -17,16 +17,12 @@ dotenv_1.default.config();
 const ws_1 = require("ws");
 const src_1 = require("./db/src");
 const crypto_1 = __importDefault(require("crypto"));
-const https_1 = __importDefault(require("https"));
-const fs_1 = __importDefault(require("fs"));
 const prisma = src_1.prismaClient;
 const PORT = process.env.PORT || 8080;
-const server = https_1.default.createServer({
-    cert: fs_1.default.readFileSync(process.env.TLS_CERT),
-    key: fs_1.default.readFileSync(process.env.TLS_KEY),
-});
-const wss = new ws_1.WebSocketServer({ server });
-server.listen(PORT, () => console.log(`Secure WebSocket server running on wss://localhost:${PORT}`));
+const wss = new ws_1.WebSocketServer({ port: Number(PORT) });
+console.log(`Secure WebSocket server running on wss://localhost:${PORT}`);
+const blackPieces = ['p', 'r', 'n', 'b', 'q', 'k'];
+const whitePieces = ['P', 'R', 'N', 'B', 'Q', 'K'];
 function generateRoomCode() {
     return crypto_1.default.randomBytes(6).toString("base64url").slice(0, 8).toUpperCase();
 }
@@ -52,7 +48,7 @@ wss.on('connection', ws => {
         catch (_d) {
             return;
         }
-        // ================== CREATE ROOM ==================
+        //CREATE ROOM 
         if (parsed.type === 'create_room') {
             const roomCode = generateRoomCode();
             const playerId = crypto_1.default.randomUUID();
@@ -84,7 +80,7 @@ wss.on('connection', ws => {
                 rooms[roomCode].id = dbRoom.id; // update memory id
             }))();
         }
-        // ================== JOIN ROOM ==================
+        // JOIN ROOM 
         if (parsed.type === 'join_room') {
             const room = rooms[parsed.roomCode];
             if (!room) {
@@ -109,7 +105,7 @@ wss.on('connection', ws => {
                 yield prisma.player.create({ data: { id: playerId, username: player.username, symbol: 'O', roomId: room.id } });
             }))();
         }
-        // ================== MOVE ==================
+        // MOVE 
         if (parsed.type === 'move') {
             const room = rooms[parsed.roomCode];
             if (!room)
@@ -158,7 +154,7 @@ wss.on('connection', ws => {
                     yield prisma.room.update({ where: { id: room.id }, data: { status: 'finished', winnerId: room.winnerId } });
             }))();
         }
-        // ================== RESTART ==================
+        //  RESTART 
         if (parsed.type === 'restart') {
             const room = rooms[parsed.roomCode];
             if (!room)
