@@ -16,6 +16,7 @@ function GameBoard() {
   const [currentTurn, setCurrentTurn] = useState<string | null>(null);
   const [winningLine, setWinningLine] = useState<number[]>([]);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(true);
 
   useEffect(() => {
    const ws = new WebSocket("wss://xo-ws.onrender.com");
@@ -24,6 +25,7 @@ function GameBoard() {
     ws.onopen = () => {
       console.log("WebSocket connection established");
       console.log("playerid on open ", playerId);
+      setIsConnecting(false);
     };
 
     ws.onmessage = (event) => {
@@ -107,6 +109,16 @@ function GameBoard() {
       }
     };
 
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      setIsConnecting(false);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed");
+      setIsConnecting(true);
+    };
+
     return () => {
       ws.close(); // cleanup
     };
@@ -159,6 +171,28 @@ function GameBoard() {
       position: idx
     }));
   };
+
+  // Show connecting screen while WebSocket is connecting
+  if (isConnecting) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 dark:border-indigo-400 mb-6"></div>
+          <h2 className="text-3xl font-extrabold mb-4 text-indigo-600 dark:text-indigo-400">
+            Connecting to Server...
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
+            Please wait while we establish the connection
+          </p>
+          <div className="mt-6 flex justify-center space-x-2">
+            <div className="w-3 h-3 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce"></div>
+            <div className="w-3 h-3 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-3 h-3 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (players.O === null) {
     return (
